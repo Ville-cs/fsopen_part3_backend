@@ -1,6 +1,6 @@
-require("dotenv").config()
-const express = require("express")
-const morgan = require("morgan")
+require('dotenv').config()
+const express = require('express')
+const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
 const app = express()
@@ -13,7 +13,7 @@ morgan.token('body', req => {
   return JSON.stringify(req.body)
 })
 
-app.use(morgan(":method :url :status :res[content-length] - :response-time ms :body "))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body '))
 
 app.get('/api/people', (request, response) => {
   Person.find({}).then(people => {
@@ -21,7 +21,7 @@ app.get('/api/people', (request, response) => {
   })
 })
 
-app.get('/api/people/:id', (request, response) => {
+app.get('/api/people/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(person => {
       if (person) {
@@ -33,13 +33,20 @@ app.get('/api/people/:id', (request, response) => {
     .catch(error => next(error))
 })
 
-app.get("/api/info", (request, response) => {
-  response.send(
-    `<p>
-      Phonebook has info for ${persons.length} people <br/>
-      ${new Date()}
-    </p>`
-  )
+app.get('/api/info', (request, response) => {
+  let count
+  Person.find({})
+    .then(people => {
+      count = people.length
+    })
+    .then(value => {
+      response.send(
+        `<p>
+          Phonebook has info for ${count} people <br/>
+          ${new Date()}
+        </p>`
+      )
+    })
 })
 
 app.delete('/api/people/:id', (request, response, next) => {
@@ -65,19 +72,19 @@ app.post('/api/people', (request, response, next) => {
   })
 
   person.save()
-  .then(savedPerson => {
-    response.json(savedPerson)
-  })
-  .catch(error => next(error))
+    .then(savedPerson => {
+      response.json(savedPerson)
+    })
+    .catch(error => next(error))
 })
 
-app.put("/api/people/:id", (request, response, next) => {
+app.put('/api/people/:id', (request, response, next) => {
   const { name, number } = request.body
 
   Person.findByIdAndUpdate(
     request.params.id,
     { name, number },
-    { new: true, runValidators: true, context: "query" }
+    { new: true, runValidators: true, context: 'query' }
   )
     .then(updatedPerson => {
       response.json(updatedPerson)
