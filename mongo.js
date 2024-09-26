@@ -6,8 +6,6 @@ if (process.argv.length<3) {
 }
 
 const password = process.argv[2]
-const name = process.argv[3]
-const number = process.argv[4]
 
 const url = `mongodb+srv://villepoi:${password}@fsopen.2aw0g.mongodb.net/phonebookDB?
   retryWrites=true&w=majority&appName=FSopen`
@@ -31,7 +29,7 @@ if (process.argv.length === 3) {
       console.log(person.name, person.number)
     })
     mongoose.connection.close()
-  })  
+  })
 }
 
 if (process.argv.length === 5) {
@@ -41,7 +39,7 @@ if (process.argv.length === 5) {
   })
 
   person.save().then(result => {
-    console.log("Result is", result)
+    console.log('Result is', result)
     mongoose.connection.close()
   })
 
